@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>لوحة تحكم الإدارة — نِكاح</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;900&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="admin.css" />
+</head>
+<body class="admin-body">
+
+  <!-- ===== LOGIN SCREEN ===== -->
+  <div class="login-screen" id="loginScreen">
+    <div class="login-bg">
+      <div class="login-orb login-orb-1"></div>
+      <div class="login-orb login-orb-2"></div>
+    </div>
+    <div class="login-card" id="loginCard">
+      <div class="login-logo">
+        <span>💚</span>
+        <span class="login-logo-text">نِكاح</span>
+      </div>
+      <p class="login-sub">لوحة تحكم الإدارة</p>
+      <form id="loginForm" novalidate>
+        <div class="login-field">
+          <label for="adminUser">اسم المستخدم</label>
+          <input type="text" id="adminUser" placeholder="admin" autocomplete="username" />
+        </div>
+        <div class="login-field">
+          <label for="adminPass">كلمة المرور</label>
+          <div class="pass-wrap">
+            <input type="password" id="adminPass" placeholder="••••••••" autocomplete="current-password" />
+            <button type="button" id="togglePass" class="toggle-pass">👁</button>
+          </div>
+        </div>
+        <div class="login-error" id="loginError"></div>
+        <button type="submit" class="btn-login" id="loginBtn">دخول</button>
+        <p class="login-hint">💡 للتجربة: admin / admin123</p>
+      </form>
+    </div>
+  </div>
+
+  <!-- ===== ADMIN DASHBOARD ===== -->
+  <div class="admin-layout" id="adminLayout" style="display:none">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-brand">
+        <span class="brand-icon">💚</span>
+        <span class="brand-text">نِكاح</span>
+        <span class="brand-badge">Admin</span>
+      </div>
+
+      <nav class="sidebar-nav">
+        <div class="nav-group-label">الرئيسية</div>
+        <a href="#" class="sidebar-link active" data-page="dashboard" id="nav-dashboard">
+          <span class="link-icon">📊</span>
+          <span>لوحة التحكم</span>
+        </a>
+
+        <div class="nav-group-label">المستخدمون</div>
+        <a href="#" class="sidebar-link" data-page="users" id="nav-users">
+          <span class="link-icon">👥</span>
+          <span>جميع المستخدمين</span>
+          <span class="badge-count" id="pendingBadge">3</span>
+        </a>
+        <a href="#" class="sidebar-link" data-page="pending" id="nav-pending">
+          <span class="link-icon">⏳</span>
+          <span>بانتظار المراجعة</span>
+        </a>
+        <a href="#" class="sidebar-link" data-page="families" id="nav-families">
+          <span class="link-icon">👨‍👩‍👧‍👦</span>
+          <span>الحسابات العائلية</span>
+        </a>
+
+        <div class="nav-group-label">الإشراف</div>
+        <a href="#" class="sidebar-link" data-page="messages" id="nav-messages">
+          <span class="link-icon">💬</span>
+          <span>مراقبة المحادثات</span>
+        </a>
+        <a href="#" class="sidebar-link" data-page="reports" id="nav-reports">
+          <span class="link-icon">🚨</span>
+          <span>البلاغات</span>
+          <span class="badge-count red" id="reportsBadge">2</span>
+        </a>
+
+        <div class="nav-group-label">الإعدادات</div>
+        <a href="#" class="sidebar-link" data-page="settings" id="nav-settings">
+          <span class="link-icon">⚙️</span>
+          <span>إعدادات الموقع</span>
+        </a>
+      </nav>
+
+      <div class="sidebar-footer">
+        <div class="admin-profile">
+          <div class="admin-avatar">م</div>
+          <div>
+            <strong>مشرف عام</strong>
+            <span>admin@nikah.com</span>
+          </div>
+        </div>
+        <button class="btn-logout" id="logoutBtn" title="تسجيل الخروج">⏻</button>
+      </div>
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <main class="admin-main" id="adminMain">
+
+      <!-- TOP BAR -->
+      <header class="admin-topbar">
+        <button class="sidebar-toggle" id="sidebarToggle">☰</button>
+        <div class="topbar-title" id="topbarTitle">لوحة التحكم</div>
+        <div class="topbar-right">
+          <div class="topbar-search">
+            <input type="text" placeholder="بحث في المستخدمين..." id="globalSearch" />
+            <span>🔍</span>
+          </div>
+          <button class="notif-btn" id="notifBtn">
+            🔔
+            <span class="notif-dot"></span>
+          </button>
+        </div>
+      </header>
+
+      <!-- PAGE: DASHBOARD -->
+      <div class="page active" id="page-dashboard">
+        <div class="page-header">
+          <h1>مرحباً، المشرف العام 👋</h1>
+          <p id="currentDate"></p>
+        </div>
+
+        <!-- Stats Cards -->
+        <div class="stats-row">
+          <div class="stat-card" id="card-total">
+            <div class="stat-icon" style="background:linear-gradient(135deg,#1B5E47,#2D7A5F)">👥</div>
+            <div class="stat-info">
+              <span class="stat-val" id="s-total">0</span>
+              <span class="stat-lbl">إجمالي المستخدمين</span>
+            </div>
+            <div class="stat-trend up">+12% ↑</div>
+          </div>
+          <div class="stat-card" id="card-active">
+            <div class="stat-icon" style="background:linear-gradient(135deg,#2196F3,#0D47A1)">✅</div>
+            <div class="stat-info">
+              <span class="stat-val" id="s-active">0</span>
+              <span class="stat-lbl">مفعّلون</span>
+            </div>
+            <div class="stat-trend up">+8% ↑</div>
+          </div>
+          <div class="stat-card" id="card-pending">
+            <div class="stat-icon" style="background:linear-gradient(135deg,#C8973A,#8B6914)">⏳</div>
+            <div class="stat-info">
+              <span class="stat-val" id="s-pending">0</span>
+              <span class="stat-lbl">بانتظار المراجعة</span>
+            </div>
+            <div class="stat-trend">جديد اليوم</div>
+          </div>
+          <div class="stat-card" id="card-marriages">
+            <div class="stat-icon" style="background:linear-gradient(135deg,#9C27B0,#4A148C)">💍</div>
+            <div class="stat-info">
+              <span class="stat-val" id="s-marriages">0</span>
+              <span class="stat-lbl">زيجات ناجحة</span>
+            </div>
+            <div class="stat-trend up">+3 هذا الشهر ↑</div>
+          </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="section-title-row">
+          <h2>طلبات تنتظر موافقتك</h2>
+          <a href="#" class="view-all" data-page="pending">عرض الكل</a>
+        </div>
+        <div class="quick-pending" id="quickPending"></div>
+
+        <!-- Recent Activity -->
+        <div class="section-title-row" style="margin-top:2rem">
+          <h2>آخر الأنشطة</h2>
+        </div>
+        <div class="activity-list" id="activityList"></div>
+      </div>
+
+      <!-- PAGE: USERS -->
+      <div class="page" id="page-users">
+        <div class="page-header">
+          <h1>إدارة المستخدمين</h1>
+          <button class="btn-add" id="btnAddUser">+ إضافة مستخدم</button>
+        </div>
+
+        <!-- Filters -->
+        <div class="filters-bar">
+          <div class="filter-tabs" id="filterTabs">
+            <button class="filter-tab active" data-filter="all">الكل</button>
+            <button class="filter-tab" data-filter="active">مفعّل</button>
+            <button class="filter-tab" data-filter="pending">انتظار</button>
+            <button class="filter-tab" data-filter="suspended">موقوف</button>
+            <button class="filter-tab" data-filter="male">ذكور</button>
+            <button class="filter-tab" data-filter="female">إناث</button>
+          </div>
+          <div class="filters-right">
+            <input type="text" class="search-input" id="usersSearch" placeholder="ابحث بالاسم أو الجنسية..." />
+            <select class="filter-select" id="sortSelect">
+              <option value="newest">الأحدث أولاً</option>
+              <option value="oldest">الأقدم أولاً</option>
+              <option value="name">الاسم</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Users Table -->
+        <div class="table-wrap">
+          <table class="users-table" id="usersTable">
+            <thead>
+              <tr>
+                <th><input type="checkbox" id="selectAll" /></th>
+                <th>المستخدم</th>
+                <th>الجنس</th>
+                <th>الجنسية</th>
+                <th>العمر</th>
+                <th>النوع</th>
+                <th>تاريخ التسجيل</th>
+                <th>الحالة</th>
+                <th>الإجراءات</th>
+              </tr>
+            </thead>
+            <tbody id="usersTableBody"></tbody>
+          </table>
+        </div>
+
+        <!-- Bulk Actions -->
+        <div class="bulk-bar" id="bulkBar" style="display:none">
+          <span id="selectedCount">0 محدد</span>
+          <button class="bulk-btn approve" onclick="bulkAction('activate')">✅ تفعيل الكل</button>
+          <button class="bulk-btn suspend" onclick="bulkAction('suspend')">⏸ إيقاف الكل</button>
+          <button class="bulk-btn delete" onclick="bulkAction('delete')">🗑 حذف الكل</button>
+        </div>
+
+        <!-- Pagination -->
+        <div class="pagination" id="pagination"></div>
+      </div>
+
+      <!-- PAGE: PENDING -->
+      <div class="page" id="page-pending">
+        <div class="page-header">
+          <h1>⏳ بانتظار المراجعة</h1>
+          <p>المستخدمون الجدد الذين يحتاجون إلى مراجعة وتفعيل</p>
+        </div>
+        <div class="pending-cards" id="pendingCards"></div>
+      </div>
+
+      <!-- PAGE: FAMILIES -->
+      <div class="page" id="page-families">
+        <div class="page-header">
+          <h1>👨‍👩‍👧‍👦 الحسابات العائلية</h1>
+        </div>
+        <div class="families-grid" id="familiesGrid"></div>
+      </div>
+
+      <!-- PAGE: MESSAGES -->
+      <div class="page" id="page-messages">
+        <div class="page-header">
+          <h1>💬 مراقبة المحادثات</h1>
+          <p>جميع المحادثات النشطة بين الأعضاء</p>
+        </div>
+        <div class="conversations-list" id="conversationsList"></div>
+      </div>
+
+      <!-- PAGE: REPORTS -->
+      <div class="page" id="page-reports">
+        <div class="page-header">
+          <h1>🚨 البلاغات</h1>
+        </div>
+        <div class="reports-list" id="reportsList"></div>
+      </div>
+
+      <!-- PAGE: SETTINGS -->
+      <div class="page" id="page-settings">
+        <div class="page-header">
+          <h1>⚙️ إعدادات الموقع</h1>
+        </div>
+          <div class="settings-grid">
+          <div class="settings-card wa-api-card" id="wa-api-card">
+            <h3>💬 إعدادات واتساب API</h3>
+            <div class="wa-api-status" id="waApiStatus">
+              <span class="wa-dot" id="waDot"></span>
+              <span id="waStatusText">جارٍ التحقق...</span>
+            </div>
+            <div class="setting-row column" style="margin-top:.75rem">
+              <span>عنوان الـ API</span>
+              <input class="api-input" type="text" id="waApiUrl" value="https://wats-enzn.onrender.com/api/v1/send" readonly />
+            </div>
+            <div class="setting-row column">
+              <span>رمز الـ Token الحالي</span>
+              <div class="token-wrap">
+                <input class="api-input" type="password" id="waTokenInput" value="sau11zbtz1ruma8o2k5tt" />
+                <button class="token-eye" id="tokenEye" onclick="toggleTokenVisibility()">👁</button>
+                <button class="token-copy" onclick="copyToken()" title="نسخ">📋</button>
+              </div>
+            </div>
+            <div class="setting-row">
+              <span>حالة الإرسال</span>
+              <label class="toggle"><input type="checkbox" id="waEnabled" checked /><span></span></label>
+            </div>
+            <div class="setting-row">
+              <span>إشعار الترحيب عند التسجيل</span>
+              <label class="toggle"><input type="checkbox" id="waSendWelcome" checked /><span></span></label>
+            </div>
+            <div class="wa-actions">
+              <button class="btn-save-token" onclick="saveWaToken()">💾 حفظ التوكن</button>
+              <button class="btn-test-wa" onclick="testWaApi()">🧪 اختبار الاتصال</button>
+              <button class="btn-gen-token" onclick="generateNewToken()">🔄 توليد توكن جديد</button>
+            </div>
+            <div class="wa-log" id="waLog"></div>
+          </div>
+
+          <div class="settings-card">
+            <h3>🔔 إعدادات الإشعارات</h3>
+            <div class="setting-row">
+              <span>إرسال إشعار عند تسجيل عضو جديد</span>
+              <label class="toggle"><input type="checkbox" checked /><span></span></label>
+            </div>
+            <div class="setting-row">
+              <span>تجنب أوقات الصلاة في الإشعارات</span>
+              <label class="toggle"><input type="checkbox" checked /><span></span></label>
+            </div>
+            <div class="setting-row">
+              <span>إشعارات البلاغات الفورية</span>
+              <label class="toggle"><input type="checkbox" checked /><span></span></label>
+            </div>
+          </div>
+          <div class="settings-card">
+            <h3>🛡️ إعدادات الأمان</h3>
+            <div class="setting-row">
+              <span>التحقق بخطوتين للمشرفين</span>
+              <label class="toggle"><input type="checkbox" checked /><span></span></label>
+            </div>
+            <div class="setting-row">
+              <span>مراجعة الرسائل تلقائياً (AI)</span>
+              <label class="toggle"><input type="checkbox" checked /><span></span></label>
+            </div>
+            <div class="setting-row">
+              <span>حظر مشاركة أرقام الهاتف</span>
+              <label class="toggle"><input type="checkbox" checked /><span></span></label>
+            </div>
+          </div>
+          <div class="settings-card">
+            <h3>⚖️ ضبط المطابقة الذكية</h3>
+            <div class="setting-row column">
+              <span>وزن الالتزام الديني</span>
+              <div class="slider-row">
+                <input type="range" min="10" max="50" value="30" id="relWeight" class="range-input" />
+                <span id="relWeightVal">30%</span>
+              </div>
+            </div>
+            <div class="setting-row column">
+              <span>وزن توافق الأعمار</span>
+              <div class="slider-row">
+                <input type="range" min="5" max="40" value="20" id="ageWeight" class="range-input" />
+                <span id="ageWeightVal">20%</span>
+              </div>
+            </div>
+          </div>
+          <div class="settings-card">
+            <h3>🌐 إعدادات عامة</h3>
+            <div class="setting-row">
+              <span>وضع الصيانة</span>
+              <label class="toggle"><input type="checkbox" /><span></span></label>
+            </div>
+            <div class="setting-row">
+              <span>السماح بالتسجيل الجديد</span>
+              <label class="toggle"><input type="checkbox" checked /><span></span></label>
+            </div>
+            <div class="setting-row">
+              <span>الباقة المجانية مفعّلة</span>
+              <label class="toggle"><input type="checkbox" checked /><span></span></label>
+            </div>
+          </div>
+        </div>
+        <button class="btn-save-settings" onclick="showToast('تم حفظ الإعدادات بنجاح ✅','success')">حفظ الإعدادات</button>
+      </div>
+
+    </main>
+  </div>
+
+  <!-- ===== USER DETAIL MODAL ===== -->
+  <div class="modal-bg" id="userModal">
+    <div class="modal-panel" id="modalPanel">
+      <button class="modal-close" id="modalClose">✕</button>
+      <div id="modalContent"></div>
+    </div>
+  </div>
+
+  <!-- ===== TOAST ===== -->
+  <div class="toast-container" id="toastContainer"></div>
+
+  <script src="admin.js"></script>
+</body>
+</html>
